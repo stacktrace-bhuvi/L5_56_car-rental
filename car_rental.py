@@ -28,13 +28,20 @@ def add_car(plate, model="Unknown", daily_rate=0, features=None):
     if daily_rate < 0:
         raise ValueError("Daily rate cannot be negative")
     car_features = list(features) if features is not None else []
-    FLEET[plate] = {"model": model, "rate": daily_rate, "available": True, "features": car_features}
+    FLEET[plate] = {
+        "model": model,
+        "rate": daily_rate,
+        "available": True,
+        "features": car_features,
+    }
     return FLEET[plate]
 
 
 def register_customer(name, licence, phone):
     """Register a new customer using parameterized query."""
-    CONN.execute("INSERT INTO customers VALUES (?, ?, ?)", (name, licence, phone))
+    CONN.execute(
+        "INSERT INTO customers VALUES (?, ?, ?)", (name, licence, phone)
+    )
 
 
 def find_customer(name):
@@ -77,7 +84,13 @@ def rent_car(plate, customer, start, end):
     FLEET[plate]["available"] = False
     code = booking_code()
     BOOKINGS.append(
-        {"code": code, "plate": plate, "customer": customer, "days": days, "cost": cost}
+        {
+            "code": code,
+            "plate": plate,
+            "customer": customer,
+            "days": days,
+            "cost": cost,
+        }
     )
     return cost
 
@@ -137,14 +150,23 @@ def main():
     register_customer("Ravi", "DL-0420110012345", "9845012345")
     register_customer("Meera", "DL-0420110099999", "9845099999")
 
-    print("Rent Swift:", rent_car("KA01AB1234", "Ravi", "2026-11-01", "2026-11-04"))
+    print(
+        "Rent Swift:",
+        rent_car("KA01AB1234", "Ravi", "2026-11-01", "2026-11-04"),
+    )
     try:
-        print("Rent Swift again:", rent_car("KA01AB1234", "Ravi", "2026-11-02", "2026-11-03"))
+        print(
+            "Rent Swift again:",
+            rent_car("KA01AB1234", "Ravi", "2026-11-02", "2026-11-03"),
+        )
     except ValueError as exc:
         print("Rent Swift again failed:", exc)
 
     try:
-        print("Rent Innova:", rent_car("KA02CD5678", "Ravi", "2026-11-10", "2026-11-07"))
+        print(
+            "Rent Innova:",
+            rent_car("KA02CD5678", "Ravi", "2026-11-10", "2026-11-07"),
+        )
     except ValueError as exc:
         print("Rent Innova failed:", exc)
 
